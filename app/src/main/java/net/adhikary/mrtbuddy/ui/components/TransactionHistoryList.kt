@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import net.adhikary.mrtbuddy.model.TransactionType
 import net.adhikary.mrtbuddy.model.TransactionWithAmount
+import net.adhikary.mrtbuddy.nfc.service.TimestampService
 
 @Composable
 fun TransactionHistoryList(transactions: List<TransactionWithAmount>) {
@@ -92,6 +93,15 @@ fun TransactionItem(
                 text = if (type == TransactionType.Commute) "$fromStation → $toStation" else "Balance Update",
                 style = MaterialTheme.typography.bodyMedium
             )
+
+            Text(
+                text = TimestampService.formatDateAsTarget(
+                    dateString = date,
+                    targetFormat = "MMM dd, yyyy 'at' hh : mm a"
+                ),
+                style = MaterialTheme.typography.bodySmall
+            )
+
         }
         Column(
             horizontalAlignment = Alignment.End,
