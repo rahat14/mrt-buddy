@@ -1,4 +1,4 @@
-package net.adhikary.mrtbuddy.ui.screens
+package net.adhikary.mrtbuddy.ui.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,6 +18,7 @@ import net.adhikary.mrtbuddy.ui.components.CalculatorIcon
 import net.adhikary.mrtbuddy.ui.components.CardIcon
 import net.adhikary.mrtbuddy.ui.components.Footer
 import net.adhikary.mrtbuddy.ui.components.TransactionHistoryList
+import net.adhikary.mrtbuddy.ui.screens.FareCalculatorScreen
 import org.jetbrains.compose.resources.stringResource
 
 enum class Screen {

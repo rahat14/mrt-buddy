@@ -18,17 +18,20 @@ import net.adhikary.mrtbuddy.managers.RescanManager
 import net.adhikary.mrtbuddy.model.CardState
 import net.adhikary.mrtbuddy.model.Transaction
 import net.adhikary.mrtbuddy.nfc.getNFCManager
-import net.adhikary.mrtbuddy.ui.screens.MainScreen
+import net.adhikary.mrtbuddy.ui.screens.home.MainScreen
+import net.adhikary.mrtbuddy.ui.screens.home.MainViewModel
 import net.adhikary.mrtbuddy.ui.theme.MRTBuddyTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App(dao: DemoDao) {
+fun App(dao: DemoDao , mainVm : MainViewModel = MainViewModel()) { // TODO need injection
     val scope = rememberCoroutineScope()
     val nfcManager = getNFCManager()
     val McardState = remember { mutableStateOf<CardState>(CardState.WaitingForTap) }
     val Mtransactions = remember { mutableStateOf<List<Transaction>>(emptyList()) }
+
+
 
     if (RescanManager.isRescanRequested.value) {
         nfcManager.startScan()
