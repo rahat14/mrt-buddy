@@ -18,15 +18,12 @@ class MainViewModel : ViewModel() {
 
     fun onAction(action: MainScreenAction) {
         when (action) {
-            MainScreenAction.OnCardTap -> {
 
-
-            }
 
             is MainScreenAction.OnInit -> {
                 // nfc manager has  a composable function that returns a NfcManager
                 // we will trigger a event to start the scanner
-                eventChannel.trySend(MainScreenEvent.StartScaning)
+
 
             }
 
@@ -34,6 +31,13 @@ class MainViewModel : ViewModel() {
                 // here state has been copied over new state
                 state = state.copy(cardState = action.newState)
 
+            }
+
+            is MainScreenAction.UpdateTransactions -> {
+                // here state has been copied over new state with new transactions
+                // rest will not be updated
+                // hence no ui will be redrawn
+                state = state.copy(transaction = action.transactions)
             }
         }
     }

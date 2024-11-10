@@ -31,14 +31,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun App(dao: DemoDao, mainVm: MainViewModel = MainViewModel()) { // TODO need injection
     val scope = rememberCoroutineScope()
     val nfcManager = getNFCManager()
-    val McardState = remember { mutableStateOf<CardState>(CardState.WaitingForTap) }
-    val Mtransactions = remember { mutableStateOf<List<Transaction>>(emptyList()) }
 
     ObserveAsEvents(mainVm.events) { event ->
         when (event) {
             is MainScreenEvent.Error -> {}
             MainScreenEvent.ShowMessage -> {}
-          
+
         }
     }
 
@@ -49,14 +47,15 @@ fun App(dao: DemoDao, mainVm: MainViewModel = MainViewModel()) { // TODO need in
 
     scope.launch {
         nfcManager.transactions.collectLatest {
-            Mtransactions.value = it
+            //   Mtransactions.value = it
+            mainVm.onAction(MainScreenAction.UpdateTransactions(it))
         }
     }
     scope.launch {
         nfcManager.cardState.collectLatest {
             // as nfc manager need to call from composable scope
             // so we had to  listen the change on composable scope and update the state of vm
-            McardState.value = it
+            // McardState.value = it
             mainVm.onAction(MainScreenAction.UpdateCardState(it))
         }
     }
@@ -76,7 +75,7 @@ fun App(dao: DemoDao, mainVm: MainViewModel = MainViewModel()) { // TODO need in
                     Column {
                         MainScreen(
                             cardState = mainVm.state.cardState,
-                            transactions = Mtransactions.value
+                            transactions = mainVm.state.transaction
                         )
                     }
                 }
