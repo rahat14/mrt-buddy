@@ -19,19 +19,28 @@ import net.adhikary.mrtbuddy.model.CardState
 import net.adhikary.mrtbuddy.model.Transaction
 import net.adhikary.mrtbuddy.nfc.getNFCManager
 import net.adhikary.mrtbuddy.ui.screens.home.MainScreen
+import net.adhikary.mrtbuddy.ui.screens.home.MainScreenAction
+import net.adhikary.mrtbuddy.ui.screens.home.MainScreenEvent
 import net.adhikary.mrtbuddy.ui.screens.home.MainViewModel
 import net.adhikary.mrtbuddy.ui.theme.MRTBuddyTheme
+import net.adhikary.mrtbuddy.utils.ObserveAsEvents
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App(dao: DemoDao , mainVm : MainViewModel = MainViewModel()) { // TODO need injection
+fun App(dao: DemoDao, mainVm: MainViewModel = MainViewModel()) { // TODO need injection
     val scope = rememberCoroutineScope()
     val nfcManager = getNFCManager()
     val McardState = remember { mutableStateOf<CardState>(CardState.WaitingForTap) }
     val Mtransactions = remember { mutableStateOf<List<Transaction>>(emptyList()) }
 
-
+    ObserveAsEvents(mainVm.events) { event ->
+        when (event) {
+            is MainScreenEvent.Error -> {}
+            MainScreenEvent.ShowMessage -> {}
+          
+        }
+    }
 
     if (RescanManager.isRescanRequested.value) {
         nfcManager.startScan()
@@ -45,9 +54,13 @@ fun App(dao: DemoDao , mainVm : MainViewModel = MainViewModel()) { // TODO need 
     }
     scope.launch {
         nfcManager.cardState.collectLatest {
+            // as nfc manager need to call from composable scope
+            // so we had to  listen the change on composable scope and update the state of vm
             McardState.value = it
+            mainVm.onAction(MainScreenAction.UpdateCardState(it))
         }
     }
+
 
     nfcManager.startScan()
 
@@ -62,7 +75,7 @@ fun App(dao: DemoDao , mainVm : MainViewModel = MainViewModel()) { // TODO need 
                 ) {
                     Column {
                         MainScreen(
-                            cardState = McardState.value,
+                            cardState = mainVm.state.cardState,
                             transactions = Mtransactions.value
                         )
                     }

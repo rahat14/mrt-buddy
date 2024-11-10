@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
-import net.adhikary.mrtbuddy.model.CardState
 
 class MainViewModel : ViewModel() {
 
@@ -23,6 +22,7 @@ class MainViewModel : ViewModel() {
 
 
             }
+
             is MainScreenAction.OnInit -> {
                 // nfc manager has  a composable function that returns a NfcManager
                 // we will trigger a event to start the scanner
@@ -30,7 +30,9 @@ class MainViewModel : ViewModel() {
 
             }
 
-            MainScreenAction.StartScanning -> {
+            is MainScreenAction.UpdateCardState -> {
+                // here state has been copied over new state
+                state = state.copy(cardState = action.newState)
 
             }
         }
