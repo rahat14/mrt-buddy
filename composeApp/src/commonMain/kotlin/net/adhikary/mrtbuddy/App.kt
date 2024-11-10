@@ -18,22 +18,19 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.adhikary.mrtbuddy.dao.DemoDao
 import net.adhikary.mrtbuddy.managers.RescanManager
-import net.adhikary.mrtbuddy.model.CardState
-import net.adhikary.mrtbuddy.model.Transaction
 import net.adhikary.mrtbuddy.nfc.getNFCManager
 import net.adhikary.mrtbuddy.ui.screens.home.MainScreen
 import net.adhikary.mrtbuddy.ui.screens.home.MainScreenAction
 import net.adhikary.mrtbuddy.ui.screens.home.MainScreenEvent
 import net.adhikary.mrtbuddy.ui.screens.home.MainScreenState
-import net.adhikary.mrtbuddy.ui.screens.home.MainViewModel
+import net.adhikary.mrtbuddy.ui.screens.home.MainScreenViewModel
 import net.adhikary.mrtbuddy.ui.theme.MRTBuddyTheme
-import net.adhikary.mrtbuddy.utils.ObserveAsEvents
 import net.adhikary.mrtbuddy.utils.observeAsActions
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App(dao: DemoDao, mainVm: MainViewModel = viewModel { MainViewModel() }) { // TODO need injection
+fun App(dao: DemoDao, mainVm: MainScreenViewModel = viewModel { MainScreenViewModel() }) { // TODO need injection
     val scope = rememberCoroutineScope()
     val nfcManager = getNFCManager()
 

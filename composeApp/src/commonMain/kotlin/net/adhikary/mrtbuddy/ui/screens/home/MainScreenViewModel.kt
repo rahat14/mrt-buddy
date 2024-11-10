@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import net.adhikary.mrtbuddy.model.Transaction
 import net.adhikary.mrtbuddy.model.TransactionWithAmount
 
-class MainViewModel : ViewModel() {
+class MainScreenViewModel : ViewModel() {
 
     private val _state: MutableStateFlow<MainScreenState> =
         MutableStateFlow(MainScreenState())
