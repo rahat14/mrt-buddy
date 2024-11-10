@@ -27,16 +27,15 @@ enum class Screen {
 
 @Composable
 fun MainScreen(
-    cardState: CardState,
-    transactions: List<Transaction> = emptyList(),
+    uiState : MainScreenState
 ) {
     var currentScreen by remember { mutableStateOf(Screen.Home) }
-    val hasTransactions = transactions.isNotEmpty()
+    val hasTransactions = uiState.transaction.isNotEmpty()
 
-    val transactionsWithAmounts = remember(transactions) {
-        transactions.mapIndexed { index, transaction ->
-            val amount = if (index + 1 < transactions.size) {
-                transaction.balance - transactions[index + 1].balance
+    val transactionsWithAmounts = remember(uiState.transaction) {
+        uiState.transaction.mapIndexed { index, transaction ->
+            val amount = if (index + 1 < uiState.transaction.size) {
+                transaction.balance - uiState.transaction[index + 1].balance
             } else {
                 null
             }
@@ -88,7 +87,7 @@ fun MainScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        BalanceCard(cardState = cardState)
+                        BalanceCard(cardState = uiState.cardState)
 
                         if (hasTransactions) {
                             TransactionHistoryList(transactionsWithAmounts)
@@ -101,7 +100,7 @@ fun MainScreen(
                 }
             }
             Screen.Calculator -> {
-                FareCalculatorScreen(cardState = cardState)
+                FareCalculatorScreen(cardState = uiState.cardState)
             }
         }
     }

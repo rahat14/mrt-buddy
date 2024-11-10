@@ -83,8 +83,7 @@ fun App(dao: DemoDao, mainVm: MainViewModel = viewModel { MainViewModel() }) { /
                 ) {
                     Column {
                         MainScreen(
-                            cardState = state.cardState,
-                            transactions = state.transaction
+                            uiState = state
                         )
                     }
                 }
