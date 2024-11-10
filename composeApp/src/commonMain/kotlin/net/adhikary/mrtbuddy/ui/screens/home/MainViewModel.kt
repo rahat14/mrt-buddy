@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import net.adhikary.mrtbuddy.model.Transaction
+import net.adhikary.mrtbuddy.model.TransactionWithAmount
 
 class MainViewModel : ViewModel() {
 
@@ -32,7 +34,7 @@ class MainViewModel : ViewModel() {
             }
 
             is MainScreenAction.UpdateCardState -> {
-                println("balalce is here ${action.newState}")
+
                 // here state has been copied over new state
                 _state.update {
                     it.copy(cardState = action.newState)
@@ -44,11 +46,26 @@ class MainViewModel : ViewModel() {
                 // here state has been copied over new state with new transactions
                 // rest will not be updated
                 // hence no ui will be redrawn
+                val transactionsWithAmount = transactionMapper(action.transactions)
                 _state.update {
-                    it.copy(transaction = action.transactions)
+                    it.copy(transaction = action.transactions , transactionWithAmount = transactionsWithAmount)
                 }
 
             }
+        }
+    }
+
+    private fun transactionMapper(transactions: List<Transaction>): List<TransactionWithAmount> {
+     return   transactions.mapIndexed { index, transaction ->
+            val amount = if (index + 1 < transactions.size) {
+                transaction.balance - transactions[index + 1].balance
+            } else {
+                null
+            }
+            TransactionWithAmount(
+                transaction = transaction,
+                amount = amount
+            )
         }
     }
 

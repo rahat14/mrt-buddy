@@ -31,21 +31,6 @@ fun MainScreen(
 ) {
     var currentScreen by remember { mutableStateOf(Screen.Home) }
     val hasTransactions = uiState.transaction.isNotEmpty()
-
-    val transactionsWithAmounts = remember(uiState.transaction) {
-        uiState.transaction.mapIndexed { index, transaction ->
-            val amount = if (index + 1 < uiState.transaction.size) {
-                transaction.balance - uiState.transaction[index + 1].balance
-            } else {
-                null
-            }
-            TransactionWithAmount(
-                transaction = transaction,
-                amount = amount
-            )
-        }
-    }
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -90,7 +75,7 @@ fun MainScreen(
                         BalanceCard(cardState = uiState.cardState)
 
                         if (hasTransactions) {
-                            TransactionHistoryList(transactionsWithAmounts)
+                            TransactionHistoryList(uiState.transactionWithAmount)
                         }
                     }
 
