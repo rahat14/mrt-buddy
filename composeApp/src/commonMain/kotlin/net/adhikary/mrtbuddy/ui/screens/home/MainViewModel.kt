@@ -1,20 +1,24 @@
 package net.adhikary.mrtbuddy.ui.screens.home
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 
 class MainViewModel : ViewModel() {
 
-    var state by mutableStateOf(MainScreenState())
-        private set
+    private val _state: MutableStateFlow<MainScreenState> =
+        MutableStateFlow(MainScreenState())
 
+    val state: StateFlow<MainScreenState> get() = _state.asStateFlow()
 
-    private val eventChannel = Channel<MainScreenEvent>()
-    val events = eventChannel.receiveAsFlow()
+    private val _events: Channel<MainScreenEvent> = Channel(Channel.BUFFERED)
+    val events: Flow<MainScreenEvent> get() = _events.receiveAsFlow()
 
     fun onAction(action: MainScreenAction) {
         when (action) {
@@ -28,8 +32,11 @@ class MainViewModel : ViewModel() {
             }
 
             is MainScreenAction.UpdateCardState -> {
+                println("balalce is here ${action.newState}")
                 // here state has been copied over new state
-                state = state.copy(cardState = action.newState)
+                _state.update {
+                    it.copy(cardState = action.newState)
+                }
 
             }
 
@@ -37,7 +44,10 @@ class MainViewModel : ViewModel() {
                 // here state has been copied over new state with new transactions
                 // rest will not be updated
                 // hence no ui will be redrawn
-                state = state.copy(transaction = action.transactions)
+                _state.update {
+                    it.copy(transaction = action.transactions)
+                }
+
             }
         }
     }

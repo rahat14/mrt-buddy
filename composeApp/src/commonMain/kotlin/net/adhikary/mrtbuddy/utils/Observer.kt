@@ -6,22 +6,28 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
+import  kotlinx.coroutines.flow.collect
+
 import kotlinx.coroutines.withContext
 
 
 @Composable
 fun <T> ObserveAsEvents(
     flow: Flow<T>,
-    key1: Any? = null,
-    key2: Any? = null,
     onEvent: (T) -> Unit
 ) {
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-    LaunchedEffect(flow, lifecycleOwner.lifecycle, key1, key2) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            withContext(Dispatchers.Main.immediate) {
-                flow.collect(onEvent)
-            }
+    LaunchedEffect(flow) {
+        flow.collect { event ->
+            onEvent(event)
         }
+    }
+}
+
+@Composable
+fun<T> Flow<T>.observeAsActions(onEach:(T) -> Unit){
+    val flow = this
+    LaunchedEffect(key1 =  flow){
+        flow.onEach(onEach).collect()
     }
 }
